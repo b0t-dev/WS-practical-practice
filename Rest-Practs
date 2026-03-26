@@ -1,0 +1,252 @@
+Rest Prac 9 PHP that returns current system date and time in JSON.
+<?php
+header("Content-Type: application/json");
+
+$date = date("Y-m-d");
+$time = date("H:i:s");
+
+echo json_encode([
+    "date" => $date,
+    "time" => $time
+]);
+?>
+
+Rest Prac 10 PHP to insert student records into a MySQL database.
+<?php
+$conn = new mysqli("localhost", "root", "", "college");
+
+$data = json_decode(file_get_contents("php://input"), true);
+
+$name = $data['name'];
+$age = $data['age'];
+
+$sql = "INSERT INTO students (name, age) VALUES ('$name', '$age')";
+
+if ($conn->query($sql)) {
+    echo json_encode(["message" => "Student added"]);
+} else {
+    echo json_encode(["error" => "Failed"]);
+}
+?>
+
+Rest Prac 11 API for fetching weather information from a third-party API.
+<?php
+header("Content-Type: application/json");
+
+$city = "Mumbai";
+$apiKey = "YOUR_API_KEY";
+
+$url = "http://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey";
+
+$response = file_get_contents($url);
+
+echo $response;
+?>
+
+Rest Prac 12 Node.js for currency conversion using dummy data.
+const express = require('express');
+const app = express();
+
+app.get('/convert', (req, res) => {
+    const amount = req.query.amount;
+    const rate = 83; // USD to INR (dummy)
+
+    const result = amount * rate;
+
+    res.json({
+        amount: amount,
+        converted: result
+    });
+});
+
+app.listen(3000, () => console.log("Server running on port 3000"));
+
+Rest Prac 13 PHP that retrieves employee salary by employee id.
+<?php
+$conn = new mysqli("localhost", "root", "", "company");
+
+$id = $_GET['id'];
+
+$sql = "SELECT salary FROM employees WHERE id='$id'";
+$result = $conn->query($sql);
+
+if ($row = $result->fetch_assoc()) {
+    echo json_encode($row);
+} else {
+    echo json_encode(["message" => "Employee not found"]);
+}
+?>
+
+Rest Prac 14 PHP for deleting student record by id.
+<?php
+$conn = new mysqli("localhost", "root", "", "college");
+
+$id = $_GET['id'];
+
+$sql = "DELETE FROM students WHERE id='$id'";
+
+if ($conn->query($sql)) {
+    echo json_encode(["message" => "Deleted successfully"]);
+} else {
+    echo json_encode(["error" => "Delete failed"]);
+}
+?>
+
+Rest Prac 15 PHP that accepts two numbers and returns their sum in JSON.
+<?php
+header("Content-Type: application/json");
+
+$data = json_decode(file_get_contents("php://input"), true);
+
+$a = $data['a'];
+$b = $data['b'];
+
+$sum = $a + $b;
+
+echo json_encode([
+    "sum" => $sum
+]);
+?>
+
+Rest Prac 16  error handling with HTTP status codes
+<?php
+header("Content-Type: application/json");
+
+$input = $_GET['id'];
+
+if (!$input) {
+    http_response_code(404);
+    echo json_encode(["error" => "ID not found"]);
+    exit;
+}
+
+try {
+    if ($input == 1) {
+        http_response_code(200);
+        echo json_encode(["message" => "Success"]);
+    } else {
+        http_response_code(404);
+        echo json_encode(["error" => "Data not found"]);
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(["error" => "Server error"]);
+}
+?>
+
+Rest Prac 1 Username display
+<?php
+header("Content-Type: application/json");
+
+$username = $_GET['username'];
+
+echo json_encode([
+    "message" => "Welcome " . $username
+]);
+?>
+
+Rest Prac 2 Students details
+<?php
+header("Content-Type: application/json");
+
+$students = [
+    ["id" => 1, "name" => "Ali", "marks" => 85],
+    ["id" => 2, "name" => "Sara", "marks" => 90]
+];
+
+echo json_encode($students);
+?>
+
+Rest Prac 3 Database NSE stock
+<?php
+$conn = new mysqli("localhost", "root", "", "stockdb");
+
+$sql = "SELECT * FROM nse";
+$result = $conn->query($sql);
+
+$data = [];
+
+while ($row = $result->fetch_assoc()) {
+    $data[] = $row;
+}
+
+echo json_encode($data);
+?>
+
+CREATE DATABASE stockdb;
+
+CREATE TABLE nse (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    index_name VARCHAR(50),
+    value FLOAT
+);
+
+Rest Prac 4 Current server time
+const express = require('express');
+const app = express();
+
+app.get('/time', (req, res) => {
+    const time = new Date();
+    res.json({ time: time });
+});
+
+app.listen(3000, () => console.log("Server running"));
+
+Rest Prac 6 Login validation
+<?php
+header("Content-Type: application/json");
+
+$data = json_decode(file_get_contents("php://input"), true);
+
+$username = $data['username'];
+$password = $data['password'];
+
+if ($username == "admin" && $password == "1234") {
+    echo json_encode(["message" => "Login successful"]);
+} else {
+    echo json_encode(["message" => "Invalid credentials"]);
+}
+?>
+
+Rest Prac 7 Top 3 Products database
+<?php
+header("Content-Type: application/json");
+
+$conn = new mysqli("localhost", "root", "", "shop");
+
+$sql = "SELECT * FROM products LIMIT 3";
+$result = $conn->query($sql);
+
+$data = [];
+
+while ($row = $result->fetch_assoc()) {
+    $data[] = $row;
+}
+
+echo json_encode($data);
+?>
+
+CREATE DATABASE shop;
+
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    price INT
+);
+
+Rest Prac 8 File upload
+<?php
+if ($_FILES['file']) {
+    move_uploaded_file($_FILES['file']['tmp_name'], "uploads/" . $_FILES['file']['name']);
+    echo json_encode(["message" => "File uploaded"]);
+}
+?>
+
+<?php
+$file = "uploads/sample.pdf";
+
+if (file_exists($file)) {
+    header("Content-Disposition: attachment; filename=" . basename($file));
+    readfile($file);
+}
+?>
